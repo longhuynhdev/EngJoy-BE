@@ -13,11 +13,4 @@ public class RegisterDto {
     private String name;
     private String email;
     private String password;
-    private String role = "ROLE_USER";
-
-    public RegisterDto(String name, String email, String password) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-    }
 }

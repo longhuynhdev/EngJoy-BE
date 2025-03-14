@@ -73,7 +73,7 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
 
         // Set role to USER
-        Role role = roleRepository.findByName(registerDto.getRole())
+        Role role = roleRepository.findByName("USER")
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
         user.setRole(role);
 
@@ -82,16 +82,39 @@ public class AuthService {
         // Create email content
         String emailContent = "<html>" +
                 "<body>" +
-                "<h1>Welcome to JoyEng English Learning System</h1>" +
-                "<p>You have successfully registered to JoyEng English Learning System.</p>" +
-                "<a href='http://localhost:5173/' style='display: inline-block; padding: 10px 20px; font-size: 16px; color: white; background-color: #4CAF50; text-align: center; text-decoration: none; border-radius: 5px;'>Go to Home Page</a>" +
+                "<h1>Welcome to EngJoy English Learning System</h1>" +
+                "<p>You have successfully registered to EngJoy English Learning System.</p>" +
+                "<a href='http://localhost:5173/' style='display: inline-block; padding: 10px 20px; font-size: 16px; color: white; background-color:rgb(76, 147, 175); text-align: center; text-decoration: none; border-radius: 5px;'>Go to Home Page</a>" +
                 "</body>" +
                 "</html>";
 
         // Send email to user
-        emailService.sendSimpleMail(new EmailDetails(user.getEmail(), "Welcome to JoyEng English Learning System", emailContent));
+        emailService.sendSimpleMail(new EmailDetails(user.getEmail(), "Welcome to EngJoy English Learning System", emailContent));
         return "User registered successfully";
     }
+
+    public String registerStaff(String name, String email, String password, String role) {
+        if (isNotValidEmail(email)) {
+            throw new InvalidEmailException("Invalid email format");
+        }
+        if(userRepository.existsByEmail(email)) {
+            throw new InvalidEmailException("Email address already in use");
+        }
+        UserEntity user = new UserEntity();
+        user.setName(name);
+        user.setEmail(email);
+        user.setPassword(passwordEncoder.encode(password));
+
+        // Set role to USER
+        Role userRole = roleRepository.findByName(role)
+                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        user.setRole(userRole);
+
+        userRepository.save(user);
+        // Send email to user
+        // Create email content
+        return "Staff registered successfully";
+    } 
 
     public AuthDto processGrantCode(String code) {
         String accessToken = getOauthAccessTokenGoogle(code);

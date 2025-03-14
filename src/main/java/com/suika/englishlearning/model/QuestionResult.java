@@ -2,7 +2,6 @@ package com.suika.englishlearning.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
 
 @Data
 @Embeddable
